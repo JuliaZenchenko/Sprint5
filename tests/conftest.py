@@ -18,4 +18,4 @@ def login(driver):
     driver.find_element(*Locators.EMAIL).send_keys(Constants.EMAIL)
     driver.find_element(*Locators.PASSWORD).send_keys(Constants.PASSWORD)
     driver.find_element(*Locators.BUTTON).click()
-    return driver
+    yield driver

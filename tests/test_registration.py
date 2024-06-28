@@ -1,5 +1,4 @@
 from faker import Faker
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -13,28 +12,20 @@ class TestRegistration:
         email = faker.email()
         password = faker.password(length=6)
 
-        driver.find_element(By.XPATH, '//a[@href="/account"]').click()
-        driver.find_element(By.XPATH, '//a[@href="/register"]').click()
-        driver.find_element(By.XPATH, '//fieldset[1]/div[1]/div[1]/input[1]').send_keys(name)
-        driver.find_element(By.XPATH, '//fieldset[2]/div[1]/div[1]/input[1]').send_keys(email)
-        driver.find_element(By.XPATH, '//fieldset[3]/div[1]/div[1]/input[1]').send_keys(password)
-        driver.find_element(By.XPATH, '//form/button').click()
+        driver.find_element(*Locators.BUTTON_PERSONAL_ACCOUNT).click()
+        driver.find_element(*Locators.BUTTON_REGISTRATION_ON_PAGE_ENTER).click()
+        driver.find_element(*Locators.NAME).send_keys(name)
+        driver.find_element(*Locators.EMAIL_FOR_REGISTRATION).send_keys(email)
+        driver.find_element(*Locators.PASSWORD).send_keys(password)
+        driver.find_element(*Locators.BUTTON_REGISTRATION_ON_PAGE_REGISTRATION).click()
 
         WebDriverWait(driver, 3).until(EC.url_matches("https://stellarburgers.nomoreparties.site/login"))
         driver.find_element(*Locators.EMAIL).send_keys(email)
         driver.find_element(*Locators.PASSWORD).send_keys(password)
         driver.find_element(*Locators.BUTTON).click()
 
-        mess = WebDriverWait(driver, 3).until(EC.visibility_of_element_located((By.TAG_NAME, 'h1'))).text
+        mess = WebDriverWait(driver, 5).until(EC.visibility_of_element_located(Locators.TITLE_THE_BURGER)).text
         assert mess == "Соберите бургер"
-
-        if mess == "Соберите бургер":
-            print("Тест пройден.")
-            print("Ваше имя:", name)
-            print("Ваш логин:", email)
-            print("Ваш пароль:", password)
-        else:
-            print("Тест не пройден.")
 
     def test_valid_random_name_not_empty(self):
         name = faker.name()
@@ -53,19 +44,16 @@ class TestRegistration:
         email = faker.email()
         password = "123"
 
-        driver.find_element(By.XPATH, '//a[@href="/account"]').click()
-        driver.find_element(By.XPATH, '//a[@href="/register"]').click()
-        driver.find_element(By.XPATH, '//fieldset[1]/div[1]/div[1]/input[1]').send_keys(name)
-        driver.find_element(By.XPATH, '//fieldset[2]/div[1]/div[1]/input[1]').send_keys(email)
-        driver.find_element(By.XPATH, '//fieldset[3]/div[1]/div[1]/input[1]').send_keys(password)
-        driver.find_element(By.XPATH, '//form/button').click()
+        driver.find_element(*Locators.BUTTON_PERSONAL_ACCOUNT).click()
+        driver.find_element(*Locators.BUTTON_REGISTRATION_ON_PAGE_ENTER).click()
+        driver.find_element(*Locators.NAME).send_keys(name)
+        driver.find_element(*Locators.EMAIL).send_keys(email)
+        driver.find_element(*Locators.PASSWORD).send_keys(password)
+        driver.find_element(*Locators.BUTTON_REGISTRATION_ON_PAGE_REGISTRATION).click()
 
-        mess = WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, "//p[text()='Некорректный пароль']"))).text
+        mess = WebDriverWait(driver, 5).until(EC.visibility_of_element_located(Locators.TITLE_INCORRECT_PASSWORD)).text
         assert mess == 'Некорректный пароль'
-        if mess == 'Некорректный пароль':
-            print("Тест пройден. При регистрации:", mess)
-        else:
-            print("Тест не пройден")
+
 
 
 
